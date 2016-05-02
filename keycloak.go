@@ -9,13 +9,6 @@ import (
 	"net/http"
 	"strings"
 
-	//
-	// This has been modified using magiconair/jose
-	// as shown below
-	//
-	//"github.com/magiconair/jose/crypto"
-	//"github.com/magiconair/jose/jws"
-
 	"github.com/SermoDigital/jose/crypto"
 	"github.com/SermoDigital/jose/jws"
 	"github.com/SermoDigital/jose/jwt"

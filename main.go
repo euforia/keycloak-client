@@ -4,12 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"log"
-	//
-	// This has been modified using magiconair/jose
-	// as shown below
-	//
-	//"github.com/magiconair/jose/crypto"
-	//"github.com/magiconair/jose/jws"
+
 	"github.com/SermoDigital/jose/jwt"
 )
 
