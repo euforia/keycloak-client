@@ -1,4 +1,4 @@
-package main
+package keycloak
 
 import (
 	"crypto/x509"
@@ -13,6 +13,8 @@ import (
 	"github.com/SermoDigital/jose/jws"
 	"github.com/SermoDigital/jose/jwt"
 )
+
+const KEYCLOAK_TOKEN_HEADER = "Authorization"
 
 //
 // Currently only supports Direct Grant Access
@@ -65,7 +67,7 @@ func (kc *KeycloakClient) ValidateToken(authToken string) (j jwt.JWT, err error)
 }
 
 func (kc *KeycloakClient) ValidateRequestToken(r *http.Request) (j jwt.JWT, err error) {
-	tokenHeader := r.Header.Get("Authorization")
+	tokenHeader := r.Header.Get(KEYCLOAK_TOKEN_HEADER)
 	if strings.HasPrefix(tokenHeader, "Bearer ") {
 		j, err = kc.ValidateToken(tokenHeader[7:])
 	} else {

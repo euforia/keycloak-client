@@ -1,4 +1,4 @@
-package main
+package keycloak
 
 import (
 	"net/http"

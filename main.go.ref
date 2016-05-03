@@ -20,10 +20,10 @@ func main() {
 	)
 	flag.Parse()
 
-	occ, err := LoadKeycloakClientConfig(*clientConfig)
+	occ, err := keycloak.LoadKeycloakClientConfig(*clientConfig)
 	if err == nil {
 		var kc *KeycloakClient
-		if kc, err = NewKeycloakClient(occ); err == nil {
+		if kc, err = keycloak.NewKeycloakClient(occ); err == nil {
 			var j jwt.JWT
 			if j, err = kc.ValidateToken(*authToken); err == nil {
 				c, _ := json.MarshalIndent(j.Claims(), " ", "  ")
