@@ -41,7 +41,7 @@ func Test_KeycloakClient_ValidateRequestToken_Expired(t *testing.T) {
 
 func Test_GetResourceRoles(t *testing.T) {
 	j, _ := testKCClient.ValidateToken(testValidAuthToken)
-	roles, err := GetResourceRoles(j)
+	roles, err := GetResourceRoles(j, "asset-manager")
 	if err != nil {
 		t.Fatal(err)
 	}

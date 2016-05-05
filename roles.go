@@ -6,18 +6,18 @@ import (
 	"github.com/SermoDigital/jose/jwt"
 )
 
-func GetResourceRoles(j jwt.JWT) (roleIds []string, err error) {
+func GetResourceRoles(j jwt.JWT, resource string) (roleIds []string, err error) {
 	if ra := j.Claims().Get("resource_access"); ra != nil {
 
 		if rv, ok := ra.(map[string]interface{}); ok {
 
 			var v map[string]interface{}
-			if v, ok = rv["asset-manager"].(map[string]interface{}); ok {
+			if v, ok = rv[resource].(map[string]interface{}); ok {
 
 				roleIds, err = getRolesFromMap(v)
 				return
 			}
-			err = fmt.Errorf("No roles defined: asset-manager")
+			err = fmt.Errorf("No roles defined: %s", resource)
 			return
 
 		}
@@ -25,7 +25,7 @@ func GetResourceRoles(j jwt.JWT) (roleIds []string, err error) {
 		return
 	}
 
-	err = fmt.Errorf("'resource_access' not found")
+	err = fmt.Errorf("'%s' not found", resource)
 	return
 }
 
