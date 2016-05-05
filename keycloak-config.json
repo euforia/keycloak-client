@@ -1,8 +1,8 @@
 {
   "realm": "master",
-  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgGfa4am1117bJnNG0+HiAMxMvtILUlsA4um8BZ62Wb+peM1SfyiqOezP7dnivfDSYUYo+5KJXuPyvevIKKFuKFRQFImBbUGttxk51M71p0ROA78WCy6+S2zKZVaItEf5o1vHx6MjDbRvylMmOkUJ16E86iWFVWeNGwXwLQ28oHBb4VAxls1W9XzHjRws6YmZf9F6tZFK+IqV6hHlJVvFdP63NcLQGvBv7qitzrluQ9qz7Sl/sdO+etvLDYtgiZpXLl6L9FprkLTBHV7HU1pIbi5WMnmCg2DiDP4ySJ3y9n6xz7GJdtSrmTeQeWcZOrQHwe8d2KVBI+8ocOuCgO5MlQIDAQAB",
-  "auth-server-url": "http://my-auth-server-url/auth",
+  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAosaxOEvSC5Ciq2kUmMT6gGSOvej8InqJN9rxYr69A+uy+wDfhzuyoK4flJHkVxfc3uy9k+tmHr8gvxTHGAwX4yQDviNGJXR1OdI0fjPn1zyPlDGInuEHedRM0GLcaZ/+w3V0MXSQi0Ek+2eoEdUDQPLYueFdGzxh/gX8oge4NTKakzKKgiSGxeOLbtfVamoXuvduKawT/I0TGY4I0MVD7+ytfXuQunv+V9BXVMKmKxxgsKdjZ9fZzXS7VAy78nnN4wTMXJXZRFr1kQ3xN5rEnU74ynfC/fl3rnh7mGGDQ8DzH6Ebsyu2ynANT4sCPMRyW/waj1ceyJ3Dj4Tv+J/npwIDAQAB",
+  "auth-server-url": "foo",
   "ssl-required": "external",
-  "resource": "my-resource",
+  "resource": "asset-manager",
   "public-client": true
 }

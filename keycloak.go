@@ -69,6 +69,7 @@ func (kc *KeycloakClient) ValidateToken(authToken string) (j jwt.JWT, err error)
 func (kc *KeycloakClient) ValidateRequestToken(r *http.Request) (j jwt.JWT, err error) {
 	tokenHeader := r.Header.Get(KEYCLOAK_TOKEN_HEADER)
 	if strings.HasPrefix(tokenHeader, "Bearer ") {
+		//fmt.Printf("|%s|\n", tokenHeader[7:])
 		j, err = kc.ValidateToken(tokenHeader[7:])
 	} else {
 		err = fmt.Errorf("Invalid 'Authorization' header")
