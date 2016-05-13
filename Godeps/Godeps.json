@@ -1,0 +1,27 @@
+{
+	"ImportPath": "github.com/euforia/keycloak-client",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v63",
+	"Deps": [
+		{
+			"ImportPath": "github.com/SermoDigital/jose",
+			"Comment": "v0.9.1-42-gce5c47d",
+			"Rev": "ce5c47d11ceb42142e54f2bdc9ff20c7b898916d"
+		},
+		{
+			"ImportPath": "github.com/SermoDigital/jose/crypto",
+			"Comment": "v0.9.1-42-gce5c47d",
+			"Rev": "ce5c47d11ceb42142e54f2bdc9ff20c7b898916d"
+		},
+		{
+			"ImportPath": "github.com/SermoDigital/jose/jws",
+			"Comment": "v0.9.1-42-gce5c47d",
+			"Rev": "ce5c47d11ceb42142e54f2bdc9ff20c7b898916d"
+		},
+		{
+			"ImportPath": "github.com/SermoDigital/jose/jwt",
+			"Comment": "v0.9.1-42-gce5c47d",
+			"Rev": "ce5c47d11ceb42142e54f2bdc9ff20c7b898916d"
+		}
+	]
+}
