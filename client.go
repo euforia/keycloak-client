@@ -1,17 +1,11 @@
 package keycloak
 
 import (
-	//"crypto/x509"
 	"encoding/json"
-	//"encoding/pem"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	//"strings"
-	//"github.com/SermoDigital/jose/crypto"
-	//"github.com/SermoDigital/jose/jws"
-	//"github.com/SermoDigital/jose/jwt"
 )
 
 const (
@@ -35,7 +29,12 @@ func NewClient(urlStr, realm, protocol string) *Client {
 }
 
 func (kc *Client) getUrl() string {
-	return fmt.Sprintf("%s/realms/%s/protocol/%s/token", kc.kcUrl, kc.realm, kc.protocol)
+	if kc.protocol != "" {
+		return fmt.Sprintf("%s/realms/%s/protocol/%s/token", kc.kcUrl, kc.realm, kc.protocol)
+	}
+	// protocol is openid-connect
+	return fmt.Sprintf("%s/realms/%s/protocol/openid-connect/token", kc.kcUrl, kc.realm)
+
 }
 
 func (kc *Client) doRequest(r *http.Request) (b []byte, err error) {

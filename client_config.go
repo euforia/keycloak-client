@@ -32,21 +32,26 @@ type ClientConfig struct {
 	publicKey interface{}
 }
 
+// verify/parse  public key and load/reload into interface
+func (cc *ClientConfig) LoadPublicKey() (err error) {
+	block, _ := pem.Decode([]byte(cc.PublicKeyString()))
+	cc.publicKey, err = x509.ParsePKIXPublicKey(block.Bytes)
+	return
+}
+
 func LoadClientConfig(cfgpath string) (occ *ClientConfig, err error) {
 	var b []byte
 	if b, err = ioutil.ReadFile(cfgpath); err == nil {
 		//fmt.Printf("%s\n", b)
 		occ = &ClientConfig{}
 		if err = json.Unmarshal(b, occ); err == nil {
-			//fmt.Println("cfg", occ)
-			block, _ := pem.Decode([]byte(occ.PublicKey()))
-			occ.publicKey, err = x509.ParsePKIXPublicKey(block.Bytes)
+			err = occ.LoadPublicKey()
 		}
 	}
 	return
 }
 
-func (occ *ClientConfig) PublicKey() string {
+func (occ *ClientConfig) PublicKeyString() string {
 	return "-----BEGIN PUBLIC KEY-----\n" + occ.RealmPublicKey + "\n-----END PUBLIC KEY-----\n"
 }
 
@@ -59,10 +64,12 @@ func (occ *ClientConfig) ValidateToken(authToken string) (j *KeycloakJWT, err er
 
 	var t jwt.JWT
 	if t, err = jws.ParseJWT([]byte(authToken)); err == nil {
+		fmt.Println(t.Claims())
 		if err = t.Validate(occ.publicKey, crypto.SigningMethodRS256); err == nil {
 			j = NewKeycloakJWT(t)
 			//fmt.Println(j)
 		}
+		fmt.Println(err)
 	}
 
 	return
@@ -73,6 +80,7 @@ func (occ *ClientConfig) ValidateRequestToken(r *http.Request) (j *KeycloakJWT, 
 	if strings.HasPrefix(tokenHeader, "Bearer ") {
 		//fmt.Printf("|%s|\n", tokenHeader[7:])
 		j, err = occ.ValidateToken(tokenHeader[7:])
+		//fmt.Println(j, err)
 	} else {
 		err = fmt.Errorf("Invalid 'Authorization' header")
 	}
