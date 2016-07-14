@@ -1,8 +1,9 @@
 {
   "realm": "master",
-  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAosaxOEvSC5Ciq2kUmMT6gGSOvej8InqJN9rxYr69A+uy+wDfhzuyoK4flJHkVxfc3uy9k+tmHr8gvxTHGAwX4yQDviNGJXR1OdI0fjPn1zyPlDGInuEHedRM0GLcaZ/+w3V0MXSQi0Ek+2eoEdUDQPLYueFdGzxh/gX8oge4NTKakzKKgiSGxeOLbtfVamoXuvduKawT/I0TGY4I0MVD7+ytfXuQunv+V9BXVMKmKxxgsKdjZ9fZzXS7VAy78nnN4wTMXJXZRFr1kQ3xN5rEnU74ynfC/fl3rnh7mGGDQ8DzH6Ebsyu2ynANT4sCPMRyW/waj1ceyJ3Dj4Tv+J/npwIDAQAB",
-  "auth-server-url": "foo",
+  "realm-public-key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAmM1HM1KjLUBOhQipG8O9H915UfC4RE5rRhg+3/l4bbuB7Ejf8ToLgTOdpWWdN6Azo79h1vE1oBjJdsJy+Fv0/Zqq5kVDP9is8kXQA2wQsATpZHHEBUvqnq1qobDNOhstVAHRIE1Ce0JSJKC7UrKktLh3Y1WBcTvptNl5o4o8hXgNt1Hw4NXK+sobh4/e2PoKa0F0RJCzrIJ0MOkDYDtoeP6DWslf3+kpwtok1T7EtNBP2L4bW3nTkpJncsqK+wY1mYrwel4HBPx2dm4YAa1yjKkrHCSacRO72MXyINi+Jg5RrIeC6WL86DZWCut+QRLQn7p9NHk87Q810b4vE7YE8QIDAQAB",
+  "auth-server-url": "https://auth-uswest.deluxe-dl3.com/auth",
   "ssl-required": "external",
   "resource": "asset-manager",
-  "public-client": true
+  "public-client": true,
+  "use-resource-role-mappings": true
 }
