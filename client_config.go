@@ -42,7 +42,6 @@ func (cc *ClientConfig) LoadPublicKey() (err error) {
 func LoadClientConfig(cfgpath string) (occ *ClientConfig, err error) {
 	var b []byte
 	if b, err = ioutil.ReadFile(cfgpath); err == nil {
-		//fmt.Printf("%s\n", b)
 		occ = &ClientConfig{}
 		if err = json.Unmarshal(b, occ); err == nil {
 			err = occ.LoadPublicKey()
@@ -64,12 +63,9 @@ func (occ *ClientConfig) ValidateToken(authToken string) (j *KeycloakJWT, err er
 
 	var t jwt.JWT
 	if t, err = jws.ParseJWT([]byte(authToken)); err == nil {
-		fmt.Println(t.Claims())
 		if err = t.Validate(occ.publicKey, crypto.SigningMethodRS256); err == nil {
 			j = NewKeycloakJWT(t)
-			//fmt.Println(j)
 		}
-		fmt.Println(err)
 	}
 
 	return
@@ -78,9 +74,7 @@ func (occ *ClientConfig) ValidateToken(authToken string) (j *KeycloakJWT, err er
 func (occ *ClientConfig) ValidateRequestToken(r *http.Request) (j *KeycloakJWT, err error) {
 	tokenHeader := r.Header.Get(keycloakTokenHeader)
 	if strings.HasPrefix(tokenHeader, "Bearer ") {
-		//fmt.Printf("|%s|\n", tokenHeader[7:])
 		j, err = occ.ValidateToken(tokenHeader[7:])
-		//fmt.Println(j, err)
 	} else {
 		err = fmt.Errorf("Invalid 'Authorization' header")
 	}
