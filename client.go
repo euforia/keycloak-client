@@ -6,6 +6,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
+
+	"github.com/SermoDigital/jose/jws"
 )
 
 const (
@@ -37,34 +40,51 @@ func (kc *Client) getUrl() string {
 
 }
 
-func (kc *Client) doRequest(r *http.Request) (b []byte, err error) {
-	var resp *http.Response
-	if resp, err = http.DefaultClient.Do(r); err == nil {
-		if b, err = ioutil.ReadAll(resp.Body); err == nil {
-			defer resp.Body.Close()
+func (kc *Client) requestForToken(v url.Values) (tokenMeta *TokenMetadata, err error) {
+	rsp, err := http.PostForm(kc.getUrl(), v)
+	if err == nil && rsp.StatusCode >= 200 && rsp.StatusCode < 400 {
+		var b []byte
+		b, err = ioutil.ReadAll(rsp.Body)
+		ioutil.WriteFile("token", b, 0644)
+		var tokenMeta TokenMetadata
+		if err = json.Unmarshal(b, &tokenMeta); err == nil {
+			return &tokenMeta, nil
 		}
 	}
-	return
+	return nil, err
 }
 
-// In progress
-func (kc *Client) TokenWithCreds(grantType, clientId, username, password string) (tokenMeta TokenMetadata, err error) {
-	req, _ := http.NewRequest("POST", kc.getUrl(), nil)
-
-	params := url.Values{
+func (kc *Client) TokenWithCreds(clientId, username, password string) (*TokenMetadata, error) {
+	v := url.Values{
 		"client_id":  []string{clientId},
-		"grant_type": []string{grantType},
+		"grant_type": []string{"password"},
 		"username":   []string{username},
 		"password":   []string{password},
 	}
-
-	req.URL.RawQuery = params.Encode()
-
-	var b []byte
-	if b, err = kc.doRequest(req); err == nil {
-		err = json.Unmarshal(b, &tokenMeta)
-	}
-
 	//https://auth-uswest.deluxe-dl3.com/auth/realms/master/protocol/openid-connect/token -d 'grant_type=password' -d 'client_id=asset-manager' -d 'username=<username>' -d 'password=<password>'
-	return
+	return kc.requestForToken(v)
+}
+
+func (kc *Client) RefreshToken(clientId, refreshToken string) (*TokenMetadata, error) {
+	v := url.Values{
+		"client_id":     []string{clientId},
+		"grant_type":    []string{"refresh_token"},
+		"refresh_token": []string{refreshToken},
+	}
+	return kc.requestForToken(v)
+}
+
+func (kc *Client) GetToken(curToken *TokenMetadata, bufSec time.Duration, clientId string, username string, password string) (*TokenMetadata, error) {
+	if curToken != nil {
+		if t, err := jws.ParseJWT([]byte(curToken.AccessToken)); err == nil {
+			if exp, ok := t.Claims().Expiration(); ok {
+				n := time.Now()
+				if exp.Add(-bufSec * time.Second).Before(n) {
+					return kc.RefreshToken(clientId, curToken.RefreshToken)
+				}
+				return curToken, nil
+			}
+		}
+	}
+	return kc.TokenWithCreds(clientId, username, password)
 }
