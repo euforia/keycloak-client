@@ -43,7 +43,6 @@ func (kc *Client) requestForToken(t *TokenMetadata, v url.Values) (err error) {
 	if err == nil && rsp.StatusCode >= 200 && rsp.StatusCode < 400 {
 		var b []byte
 		b, err = ioutil.ReadAll(rsp.Body)
-		ioutil.WriteFile("token", b, 0644)
 		if err = json.Unmarshal(b, t); err == nil {
 			return nil
 		}
