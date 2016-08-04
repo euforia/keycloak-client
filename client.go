@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 const (
@@ -37,34 +38,48 @@ func (kc *Client) getUrl() string {
 
 }
 
-func (kc *Client) doRequest(r *http.Request) (b []byte, err error) {
-	var resp *http.Response
-	if resp, err = http.DefaultClient.Do(r); err == nil {
-		if b, err = ioutil.ReadAll(resp.Body); err == nil {
-			defer resp.Body.Close()
+func (kc *Client) requestForToken(t *TokenMetadata, v url.Values) (err error) {
+	rsp, err := http.PostForm(kc.getUrl(), v)
+	if err == nil && rsp.StatusCode >= 200 && rsp.StatusCode < 400 {
+		var b []byte
+		b, err = ioutil.ReadAll(rsp.Body)
+		if err = json.Unmarshal(b, t); err == nil {
+			return nil
 		}
 	}
-	return
+	return err
 }
 
-// In progress
-func (kc *Client) TokenWithCreds(grantType, clientId, username, password string) (tokenMeta TokenMetadata, err error) {
-	req, _ := http.NewRequest("POST", kc.getUrl(), nil)
-
-	params := url.Values{
+func (kc *Client) TokenWithCreds(t *TokenMetadata, clientId, username, password string) error {
+	v := url.Values{
 		"client_id":  []string{clientId},
-		"grant_type": []string{grantType},
+		"grant_type": []string{"password"},
 		"username":   []string{username},
 		"password":   []string{password},
 	}
-
-	req.URL.RawQuery = params.Encode()
-
-	var b []byte
-	if b, err = kc.doRequest(req); err == nil {
-		err = json.Unmarshal(b, &tokenMeta)
-	}
-
 	//https://auth-uswest.deluxe-dl3.com/auth/realms/master/protocol/openid-connect/token -d 'grant_type=password' -d 'client_id=asset-manager' -d 'username=<username>' -d 'password=<password>'
-	return
+	return kc.requestForToken(t, v)
+}
+
+func (kc *Client) RefreshToken(t *TokenMetadata, clientId string) error {
+	v := url.Values{
+		"client_id":     []string{clientId},
+		"grant_type":    []string{"refresh_token"},
+		"refresh_token": []string{t.RefreshToken},
+	}
+	return kc.requestForToken(t, v)
+}
+
+func (kc *Client) GetToken(t *TokenMetadata, bufSec time.Duration, clientId string, username string, password string) (err error) {
+	if t != nil {
+		if exp, err := t.IsExpired(AccessTokenClass, bufSec); err == nil {
+			if exp {
+				if err = kc.RefreshToken(t, clientId); err == nil {
+					return nil
+				}
+			}
+			return nil
+		}
+	}
+	return kc.TokenWithCreds(t, clientId, username, password)
 }

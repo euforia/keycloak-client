@@ -2,6 +2,7 @@ package keycloak
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/SermoDigital/jose/jws"
 	"github.com/SermoDigital/jose/jwt"
@@ -44,4 +45,13 @@ func (tk *TokenMetadata) ParseJWT(tokenClass TokenClass) (j jwt.JWT, err error) 
 
 	j, err = jws.ParseJWT([]byte(field))
 	return
+}
+
+func (tk *TokenMetadata) IsExpired(tokenClass TokenClass, bufSec time.Duration) (bool, error) {
+	if j, err := tk.ParseJWT(tokenClass); err == nil {
+		if exp, ok := j.Claims().Expiration(); ok {
+			return exp.Add(-bufSec * time.Second).Before(time.Now()), nil
+		}
+	}
+	return true, fmt.Errorf("the token is invalid")
 }
