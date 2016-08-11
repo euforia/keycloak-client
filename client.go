@@ -57,7 +57,8 @@ func (kc *Client) TokenWithCreds(t *TokenMetadata, clientId, username, password 
 		"username":   []string{username},
 		"password":   []string{password},
 	}
-	//https://auth-uswest.deluxe-dl3.com/auth/realms/master/protocol/openid-connect/token -d 'grant_type=password' -d 'client_id=asset-manager' -d 'username=<username>' -d 'password=<password>'
+	//https://auth-uswest.deluxe-dl3.com/auth/realms/master/protocol/openid-connect/token
+	//-d 'grant_type=password' -d 'client_id=asset-manager' -d 'username=<username>' -d 'password=<password>'
 	return kc.requestForToken(t, v)
 }
 
