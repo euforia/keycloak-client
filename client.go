@@ -40,11 +40,18 @@ func (kc *Client) getUrl() string {
 
 func (kc *Client) requestForToken(t *TokenMetadata, v url.Values) (err error) {
 	rsp, err := http.PostForm(kc.getUrl(), v)
-	if err == nil && rsp.StatusCode >= 200 && rsp.StatusCode < 400 {
-		var b []byte
-		b, err = ioutil.ReadAll(rsp.Body)
-		if err = json.Unmarshal(b, t); err == nil {
-			return nil
+
+	if err == nil {
+		if rsp.StatusCode >= 200 && rsp.StatusCode < 400 {
+			var b []byte
+			if b, err = ioutil.ReadAll(rsp.Body); err == nil {
+				defer rsp.Body.Close()
+				if err = json.Unmarshal(b, t); err == nil {
+					return nil
+				}
+			}
+		} else {
+			err = fmt.Errorf("requestForToken receives status code: %s", rsp.Status)
 		}
 	}
 	return err
@@ -78,8 +85,9 @@ func (kc *Client) GetToken(t *TokenMetadata, bufSec time.Duration, clientId stri
 				if err = kc.RefreshToken(t, clientId); err == nil {
 					return nil
 				}
+			} else {
+				return nil
 			}
-			return nil
 		}
 	}
 	return kc.TokenWithCreds(t, clientId, username, password)
